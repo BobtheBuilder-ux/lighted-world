@@ -22,8 +22,29 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
 
+interface CourseData {
+  title: string;
+  description: string;
+  instructor: string;
+  category: string;
+  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  price: string;
+  duration: string;
+  thumbnail: File | null;
+  status: 'Draft' | 'Published';
+}
+
+interface Lesson {
+  id: number;
+  title: string;
+  description: string;
+  duration: string;
+  videoFile: File | null;
+  materials: File[];
+}
+
 export default function NewCourse() {
-  const [courseData, setCourseData] = useState({
+  const [courseData, setCourseData] = useState<CourseData>({
     title: '',
     description: '',
     instructor: '',
@@ -35,7 +56,7 @@ export default function NewCourse() {
     status: 'Draft'
   });
 
-  const [lessons, setLessons] = useState([
+  const [lessons, setLessons] = useState<Lesson[]>([
     { id: 1, title: '', description: '', duration: '', videoFile: null, materials: [] }
   ]);
 
@@ -56,7 +77,7 @@ export default function NewCourse() {
     'Dr. Elena Rodriguez'
   ];
 
-  const handleCourseDataChange = (field, value) => {
+  const handleCourseDataChange = (field: keyof CourseData, value: string) => {
     setCourseData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -72,13 +93,13 @@ export default function NewCourse() {
     setLessons([...lessons, newLesson]);
   };
 
-  const updateLesson = (id, field, value) => {
+  const updateLesson = (id: number, field: keyof Lesson, value: string) => {
     setLessons(lessons.map(lesson => 
       lesson.id === id ? { ...lesson, [field]: value } : lesson
     ));
   };
 
-  const removeLesson = (id) => {
+  const removeLesson = (id: number) => {
     setLessons(lessons.filter(lesson => lesson.id !== id));
   };
 

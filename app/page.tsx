@@ -7,160 +7,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
+import NavBar from '@/components/NavBar';
+import HeroSection from '@/components/HeroSection';
+import Services from '@/components/Services';
+import Stories from '@/components/Stories';
 
 export default function Home() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const testimonials = [
-    {
-      name: "Sarah Chen",
-      role: "Marketing Executive",
-      content: "LightedWorld helped me discover strengths I never knew I had. The transformation has been life-changing.",
-      rating: 5,
-      image: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop"
-    },
-    {
-      name: "Michael Rodriguez",
-      role: "Teacher",
-      content: "I found my true calling through their guidance. Now I wake up excited about each day.",
-      rating: 5,
-      image: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop"
-    },
-    {
-      name: "Emily Johnson",
-      role: "Entrepreneur",
-      content: "The journey of self-discovery here opened doors I never imagined possible.",
-      rating: 5,
-      image: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop"
-    }
-  ];
-
-  const services = [
-    {
-      icon: <Lightbulb className="w-8 h-8" />,
-      title: "Self-Discovery Journey",
-      description: "Uncover your authentic self through guided exploration and reflection exercises."
-    },
-    {
-      icon: <Star className="w-8 h-8" />,
-      title: "Potential Maximization",
-      description: "Develop strategies to unlock and amplify your unique talents and abilities."
-    },
-    {
-      icon: <Heart className="w-8 h-8" />,
-      title: "Purpose Alignment",
-      description: "Connect with your deeper purpose and create a meaningful life path."
-    },
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: "Community Support",
-      description: "Join a supportive community of like-minded individuals on similar journeys."
-    }
-  ];
-
-  const stats = [
-    { number: "10,000+", label: "Lives Transformed" },
-    { number: "95%", label: "Success Rate" },
-    { number: "50+", label: "Expert Guides" },
-    { number: "24/7", label: "Support Available" }
-  ];
-
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center">
-                <Lightbulb className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold text-gray-900">LightedWorld</span>
-            </Link>
-            <div className="hidden md:flex items-center space-x-8">
-              <Link href="/about" className="text-gray-700 hover:text-amber-600 transition-colors">About</Link>
-              <Link href="/services" className="text-gray-700 hover:text-amber-600 transition-colors">Services</Link>
-              <Link href="/stories" className="text-gray-700 hover:text-amber-600 transition-colors">Stories</Link>
-              <Link href="/resources" className="text-gray-700 hover:text-amber-600 transition-colors">Resources</Link>
-              <Link href="/auth/login">
-                <Button variant="outline" className="mr-2">
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/auth/register">
-                <Button className="bg-amber-500 hover:bg-amber-600 text-white">
-                  Begin Your Journey
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <NavBar />
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 bg-gradient-to-br from-amber-50 via-white to-teal-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-                Discover Your
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-teal-600"> True Light</span>
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Embark on a transformational journey to uncover your authentic self, maximize your potential, 
-                and become all you're meant to be. Your light is waiting to shine.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/auth/register">
-                  <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 text-lg">
-                    Start Your Transformation
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Button>
-                </Link>
-                <Button size="lg" variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-50 px-8 py-4 text-lg">
-                  <Play className="mr-2 w-5 h-5" />
-                  Watch Our Story
-                </Button>
-              </div>
-            </div>
-            <div className={`transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <div className="relative">
-                <img 
-                  src="https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop"
-                  alt="Person discovering their potential"
-                  className="rounded-2xl shadow-2xl w-full"
-                />
-                <div className="absolute -bottom-6 -left-6 bg-white rounded-xl p-4 shadow-lg">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium text-gray-700">10,000+ lives transformed</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-4xl font-bold text-amber-400 mb-2">{stat.number}</div>
-                <div className="text-gray-300">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
+      <HeroSection />
       {/* About Section */}
       <section id="about" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -211,89 +70,10 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">How We Light Your Path</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our comprehensive approach combines proven methodologies with personalized support 
-              to help you discover, develop, and deploy your unique gifts.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {services.map((service, index) => (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 shadow-lg">
-                <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white group-hover:scale-110 transition-transform duration-300">
-                    {service.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">{service.title}</h3>
-                  <p className="text-gray-600">{service.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <Link href="/services">
-              <Button size="lg" className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 text-lg">
-                Explore All Services
-                <ChevronRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <Services />
 
       {/* Success Stories Section */}
-      <section id="stories" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Stories of Transformation</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Real people, real transformations. Discover how others have found their light and 
-              stepped into their authentic power.
-            </p>
-          </div>
-          
-          <div className="grid lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
-                <CardContent className="p-8">
-                  <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-amber-400 fill-current" />
-                    ))}
-                  </div>
-                  <Quote className="w-8 h-8 text-teal-600 mb-4" />
-                  <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
-                  <div className="flex items-center">
-                    <img 
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full mr-4"
-                    />
-                    <div>
-                      <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                      <div className="text-gray-600 text-sm">{testimonial.role}</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <Link href="/stories">
-              <Button size="lg" variant="outline" className="border-amber-500 text-amber-600 hover:bg-amber-50 px-8 py-4 text-lg">
-                Read More Stories
-                <ChevronRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <Stories />
 
       {/* Resources Section */}
       <section id="resources" className="py-20 bg-gradient-to-br from-teal-50 to-amber-50">

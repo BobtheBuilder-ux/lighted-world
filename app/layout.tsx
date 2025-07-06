@@ -16,20 +16,21 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://lightedworld.org'), // Replace with your actual domain
   title: 'LightedWorld - Discover Your True Light',
-  description: 'Embark on a transformational journey to uncover your authentic self, maximize your potential, and become all you\'re meant to be.',
-  keywords: 'personal transformation, self-discovery, potential maximization, authentic living, personal growth',
-  authors: [{ name: 'LightedWorld' }],
+  description: 'Empowering individuals to discover their true identity and maximize their potential through transformational guidance and support.',
   openGraph: {
     title: 'LightedWorld - Discover Your True Light',
-    description: 'Embark on a transformational journey to uncover your authentic self, maximize your potential, and become all you\'re meant to be.',
-    type: 'website',
+    description: 'Empowering individuals to discover their true identity and maximize their potential.',
     url: 'https://lightedworld.org',
+    siteName: 'LightedWorld',
+    locale: 'en_US',
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'LightedWorld - Discover Your True Light',
-    description: 'Embark on a transformational journey to uncover your authentic self, maximize your potential, and become all you\'re meant to be.',
+    description: 'Empowering individuals to discover their true identity and maximize their potential.',
   },
 };
 
