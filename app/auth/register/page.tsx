@@ -8,10 +8,29 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  agreeToTerms: boolean;
+  subscribeNewsletter: boolean;
+}
+
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  agreeToTerms?: string;
+}
+
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
     email: '',
@@ -20,10 +39,10 @@ export default function Register() {
     agreeToTerms: false,
     subscribeNewsletter: true
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const validatePassword = (password) => {
+  const validatePassword = (password: string) => {
     const requirements = {
       length: password.length >= 8,
       uppercase: /[A-Z]/.test(password),
@@ -36,13 +55,13 @@ export default function Register() {
 
   const passwordRequirements = validatePassword(formData.password);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setErrors({});
 
     // Validation
-    const newErrors = {};
+    const newErrors: FormErrors = {};
     if (!formData.firstName) newErrors.firstName = 'First name is required';
     if (!formData.lastName) newErrors.lastName = 'Last name is required';
     if (!formData.email) newErrors.email = 'Email is required';
@@ -72,14 +91,14 @@ export default function Register() {
     }, 2000);
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
     // Clear error when user starts typing
-    if (errors[name]) {
+    if (name in errors) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };

@@ -19,11 +19,32 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import Link from 'next/link';
 
+interface Course {
+  id: number;
+  title: string;
+  instructor: string;
+  category: string;
+  duration: string;
+  lessons: number;
+  progress: number;
+  rating: number;
+  students: number;
+  description: string;
+  image: string;
+  status: 'completed' | 'in-progress' | 'locked' | 'available';
+  level: 'Beginner' | 'Intermediate' | 'Advanced';
+}
+
+interface Category {
+  id: string;
+  label: string;
+}
+
 export default function Courses() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const categories = [
+  const categories: Category[] = [
     { id: 'all', label: 'All Courses' },
     { id: 'self-discovery', label: 'Self-Discovery' },
     { id: 'potential', label: 'Potential Maximization' },
@@ -32,7 +53,7 @@ export default function Courses() {
     { id: 'relationships', label: 'Relationships' }
   ];
 
-  const courses = [
+  const courses: Course[] = [
     {
       id: 1,
       title: 'Discovering Your Core Values',
@@ -133,7 +154,7 @@ export default function Courses() {
     return matchesCategory && matchesSearch;
   });
 
-  const getStatusIcon = (status, progress) => {
+  const getStatusIcon = (status: Course['status'], progress: number) => {
     switch (status) {
       case 'completed':
         return <CheckCircle className="w-5 h-5 text-green-600" />;
@@ -146,7 +167,7 @@ export default function Courses() {
     }
   };
 
-  const getStatusText = (status, progress) => {
+  const getStatusText = (status: Course['status'], progress: number) => {
     switch (status) {
       case 'completed':
         return 'Completed';
@@ -159,7 +180,7 @@ export default function Courses() {
     }
   };
 
-  const getLevelColor = (level) => {
+  const getLevelColor = (level: Course['level']) => {
     switch (level) {
       case 'Beginner':
         return 'bg-green-100 text-green-800';

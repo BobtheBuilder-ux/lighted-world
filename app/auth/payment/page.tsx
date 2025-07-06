@@ -8,10 +8,31 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 
+interface FormData {
+  cardNumber: string;
+  expiryDate: string;
+  cvv: string;
+  cardName: string;
+  billingAddress: string;
+  city: string;
+  zipCode: string;
+  country: string;
+}
+
+interface Plan {
+  id: string;
+  name: string;
+  price: number;
+  period: string;
+  description: string;
+  features: string[];
+  popular: boolean;
+}
+
 export default function Payment() {
-  const [selectedPlan, setSelectedPlan] = useState('premium');
-  const [paymentMethod, setPaymentMethod] = useState('card');
-  const [formData, setFormData] = useState({
+  const [selectedPlan, setSelectedPlan] = useState<string>('premium');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'paypal'>('card');
+  const [formData, setFormData] = useState<FormData>({
     cardNumber: '',
     expiryDate: '',
     cvv: '',
@@ -23,7 +44,7 @@ export default function Payment() {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const plans = [
+  const plans: Plan[] = [
     {
       id: 'basic',
       name: 'Foundation',
@@ -75,7 +96,7 @@ export default function Payment() {
     }
   ];
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -87,12 +108,12 @@ export default function Payment() {
     }, 3000);
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const formatCardNumber = (value) => {
+  const formatCardNumber = (value: string) => {
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
     const matches = v.match(/\d{4,16}/g);
     const match = matches && matches[0] || '';
@@ -107,7 +128,7 @@ export default function Payment() {
     }
   };
 
-  const formatExpiryDate = (value) => {
+  const formatExpiryDate = (value: string) => {
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
     if (v.length >= 2) {
       return v.substring(0, 2) + '/' + v.substring(2, 4);
@@ -232,7 +253,7 @@ export default function Payment() {
                         name="paymentMethod"
                         value="card"
                         checked={paymentMethod === 'card'}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        onChange={(e) => setPaymentMethod(e.target.value as 'card' | 'paypal')}
                         className="text-amber-600 focus:ring-amber-500"
                       />
                       <CreditCard className="w-5 h-5 text-gray-600" />
@@ -244,7 +265,7 @@ export default function Payment() {
                         name="paymentMethod"
                         value="paypal"
                         checked={paymentMethod === 'paypal'}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        onChange={(e) => setPaymentMethod(e.target.value as 'card' | 'paypal')}
                         className="text-amber-600 focus:ring-amber-500"
                       />
                       <div className="w-5 h-5 bg-blue-600 rounded text-white text-xs flex items-center justify-center font-bold">
@@ -341,7 +362,10 @@ export default function Payment() {
                 {/* PayPal */}
                 {paymentMethod === 'paypal' && (
                   <Button
-                    onClick={handleSubmit}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+                    }}
                     disabled={isLoading}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3"
                   >
