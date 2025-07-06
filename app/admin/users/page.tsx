@@ -25,12 +25,27 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  avatar: string;
+  plan: 'Foundation' | 'Transformation' | 'Mastery';
+  status: 'Active' | 'Inactive' | 'Pending' | 'Suspended';
+  joined: string;
+  lastLogin: string;
+  coursesCompleted: number;
+  totalSpent: number;
+  phone: string;
+  location: string;
+}
+
 export default function AdminUsers() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
 
-  const users = [
+  const users: User[] = [
     {
       id: 1,
       name: 'Sarah Chen',
@@ -117,12 +132,14 @@ export default function AdminUsers() {
     return matchesSearch && matchesFilter;
   });
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: 'Active' | 'Inactive' | 'Pending' | 'Suspended') => {
     switch (status) {
       case 'Active':
         return 'bg-green-100 text-green-800';
       case 'Inactive':
         return 'bg-gray-100 text-gray-800';
+      case 'Pending':
+        return 'bg-yellow-100 text-yellow-800';
       case 'Suspended':
         return 'bg-red-100 text-red-800';
       default:
@@ -130,7 +147,7 @@ export default function AdminUsers() {
     }
   };
 
-  const getPlanColor = (plan) => {
+  const getPlanColor = (plan: 'Foundation' | 'Transformation' | 'Mastery') => {
     switch (plan) {
       case 'Foundation':
         return 'bg-blue-100 text-blue-800';
