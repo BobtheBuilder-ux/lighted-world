@@ -7,6 +7,29 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 
+interface Resource {
+  id: number;
+  title: string;
+  description: string;
+  category: 'articles' | 'meditations' | 'worksheets' | 'videos';
+  type: string;
+  duration: string;
+  difficulty: string;
+  image: string;
+  rating: number;
+  downloads: string;
+  featured?: boolean;
+  downloadUrl?: string;
+  playUrl?: string;
+  readUrl?: string;
+}
+
+interface Category {
+  id: string;
+  label: string;
+  icon: JSX.Element;
+}
+
 export default function Resources() {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -16,7 +39,7 @@ export default function Resources() {
     setIsVisible(true);
   }, []);
 
-  const categories = [
+  const categories: Category[] = [
     { id: 'all', label: 'All Resources', icon: <Star className="w-4 h-4" /> },
     { id: 'articles', label: 'Articles & Guides', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'meditations', label: 'Meditations', icon: <Headphones className="w-4 h-4" /> },
@@ -24,7 +47,7 @@ export default function Resources() {
     { id: 'videos', label: 'Videos', icon: <Play className="w-4 h-4" /> }
   ];
 
-  const featuredResources = [
+  const featuredResources: Resource[] = [
     {
       id: 1,
       title: "The Complete Self-Discovery Workbook",
@@ -69,7 +92,7 @@ export default function Resources() {
     }
   ];
 
-  const resources = [
+  const resources: Resource[] = [
     {
       id: 4,
       title: "Daily Affirmations for Self-Worth",
@@ -189,7 +212,7 @@ export default function Resources() {
     return matchesCategory && matchesSearch;
   });
 
-  const getResourceIcon = (category) => {
+  const getResourceIcon = (category: Resource['category']) => {
     switch (category) {
       case 'articles': return <BookOpen className="w-6 h-6" />;
       case 'meditations': return <Headphones className="w-6 h-6" />;
@@ -199,7 +222,7 @@ export default function Resources() {
     }
   };
 
-  const getActionButton = (resource) => {
+  const getActionButton = (resource: Resource) => {
     switch (resource.category) {
       case 'worksheets':
         return (
