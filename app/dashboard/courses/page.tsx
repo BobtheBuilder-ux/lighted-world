@@ -1,23 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  Lightbulb, 
-  BookOpen, 
-  Play, 
-  Clock, 
-  Star, 
-  Filter,
-  Search,
-  CheckCircle,
-  Lock,
-  ArrowLeft
-} from 'lucide-react';
+import Link from 'next/link';
+import { BookOpen, Play, Clock, CheckCircle, Lock, ArrowLeft, Search, Lightbulb, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
-import Link from 'next/link';
+
+// Create a simple Progress Bar component to avoid bundling issues
+const ProgressBar = ({ value = 0 }: { value: number }) => (
+  <div className="relative h-2 w-full overflow-hidden rounded-full bg-gray-200">
+    <div
+      className="h-full bg-amber-500 transition-all"
+      style={{ width: `${value}%` }}
+    />
+  </div>
+);
 
 interface Course {
   id: number;
@@ -154,7 +152,7 @@ export default function Courses() {
     return matchesCategory && matchesSearch;
   });
 
-  const getStatusIcon = (status: Course['status'], progress: number) => {
+  const getStatusIcon = (status: Course['status'], progress: number): JSX.Element => {
     switch (status) {
       case 'completed':
         return <CheckCircle className="w-5 h-5 text-green-600" />;
@@ -275,7 +273,7 @@ export default function Courses() {
                   </div>
                   {course.status === 'in-progress' && course.progress > 0 && (
                     <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2">
-                      <Progress value={course.progress} className="h-2" />
+                      <ProgressBar value={course.progress} />
                     </div>
                   )}
                 </div>
@@ -312,17 +310,17 @@ export default function Courses() {
                   <Button 
                     className={`w-full ${
                       course.status === 'locked' 
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                        : course.status === 'completed'
-                        ? 'bg-green-600 hover:bg-green-700 text-white'
-                        : 'bg-amber-500 hover:bg-amber-600 text-white'
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                      : course.status === 'completed'
+                      ? 'bg-green-600 hover:bg-green-700 text-white'
+                      : 'bg-amber-500 hover:bg-amber-600 text-white'
                     }`}
                     disabled={course.status === 'locked'}
                   >
-                    {course.status === 'locked' && <Lock className="mr-2 w-4 h-4" />}
-                    {course.status === 'completed' && <CheckCircle className="mr-2 w-4 h-4" />}
-                    {course.status === 'in-progress' && <Play className="mr-2 w-4 h-4" />}
-                    {course.status === 'available' && <BookOpen className="mr-2 w-4 h-4" />}
+                    {course.status === 'locked' ? <Lock className="mr-2 w-4 h-4" /> :
+                     course.status === 'completed' ? <CheckCircle className="mr-2 w-4 h-4" /> :
+                     course.status === 'in-progress' ? <Play className="mr-2 w-4 h-4" /> :
+                     <BookOpen className="mr-2 w-4 h-4" />}
                     
                     {course.status === 'locked' ? 'Upgrade to Access' :
                      course.status === 'completed' ? 'Review Course' :
@@ -341,7 +339,10 @@ export default function Courses() {
             <h3 className="text-xl font-medium text-gray-900 mb-2">No courses found</h3>
             <p className="text-gray-600">Try adjusting your search or filter criteria</p>
             <Button 
-              onClick={() => {setSelectedCategory('all'); setSearchTerm('');}}
+              onClick={() => {
+                setSelectedCategory('all');
+                setSearchTerm('');
+              }}
               className="mt-4 bg-amber-500 hover:bg-amber-600 text-white"
             >
               Show All Courses
