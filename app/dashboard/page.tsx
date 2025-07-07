@@ -18,7 +18,9 @@ import {
   Bell,
   Settings,
   User,
-  LogOut
+  LogOut,
+  Menu,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,6 +29,7 @@ import Link from 'next/link';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user] = useState({
     name: 'Sarah Chen',
     email: 'sarah@example.com',
@@ -111,7 +114,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center space-x-2">
@@ -121,7 +124,8 @@ export default function Dashboard() {
               <span className="text-xl font-bold text-gray-900">LightedWorld</span>
             </Link>
             
-            <div className="flex items-center space-x-4">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-4">
               <Button variant="ghost" size="sm">
                 <Bell className="w-5 h-5" />
               </Button>
@@ -131,7 +135,7 @@ export default function Dashboard() {
                   alt={user.name}
                   className="w-8 h-8 rounded-full"
                 />
-                <div className="hidden md:block">
+                <div>
                   <div className="text-sm font-medium text-gray-900">{user.name}</div>
                   <div className="text-xs text-gray-500">{user.plan} Plan</div>
                 </div>
@@ -140,8 +144,55 @@ export default function Dashboard() {
                 <Settings className="w-5 h-5" />
               </Button>
             </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2"
+              >
+                {isMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden border-t border-gray-200">
+            <div className="px-4 py-3 space-y-3">
+              <div className="flex items-center space-x-3 py-2">
+                <img 
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-8 h-8 rounded-full"
+                />
+                <div>
+                  <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                  <div className="text-xs text-gray-500">{user.plan} Plan</div>
+                </div>
+              </div>
+              <Button variant="ghost" size="sm" className="w-full justify-start">
+                <Bell className="w-5 h-5 mr-2" />
+                Notifications
+              </Button>
+              <Button variant="ghost" size="sm" className="w-full justify-start">
+                <Settings className="w-5 h-5 mr-2" />
+                Settings
+              </Button>
+              <Button variant="ghost" size="sm" className="w-full justify-start text-red-600">
+                <LogOut className="w-5 h-5 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        )}
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -155,8 +206,8 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Stats Grid - Improved mobile layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
           {stats.map((stat, index) => (
             <Card key={index} className="hover:shadow-md transition-shadow">
               <CardContent className="p-6">
@@ -174,16 +225,16 @@ export default function Dashboard() {
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-8">
+          {/* Main Content - Improved mobile layout */}
+          <div className="lg:col-span-2 space-y-4 sm:space-y-8">
             {/* Current Courses */}
             <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-6">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
                   <h2 className="text-xl font-bold text-gray-900">Continue Learning</h2>
                   <Link href="/dashboard/courses">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
                       View All Courses
                       <ArrowRight className="ml-2 w-4 h-4" />
                     </Button>
@@ -192,11 +243,11 @@ export default function Dashboard() {
                 
                 <div className="space-y-4">
                   {currentCourses.map((course) => (
-                    <div key={course.id} className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                    <div key={course.id} className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                       <img 
                         src={course.image}
                         alt={course.title}
-                        className="w-16 h-16 rounded-lg object-cover"
+                        className="w-full sm:w-16 h-32 sm:h-16 rounded-lg object-cover"
                       />
                       <div className="flex-1">
                         <h3 className="font-semibold text-gray-900">{course.title}</h3>
@@ -209,8 +260,8 @@ export default function Dashboard() {
                           <Progress value={course.progress} className="h-2" />
                         </div>
                       </div>
-                      <div className="text-right">
-                        <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-white">
+                      <div className="w-full sm:w-auto sm:text-right">
+                        <Button size="sm" className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white">
                           <Play className="mr-2 w-4 h-4" />
                           Continue
                         </Button>
@@ -222,11 +273,11 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            {/* Achievements */}
+            {/* Achievements - Improved mobile layout */}
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-6">Your Achievements</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                   {achievements.map((achievement) => (
                     <div 
                       key={achievement.id}
@@ -248,8 +299,8 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
+          {/* Sidebar - Improved mobile layout */}
+          <div className="space-y-4 sm:space-y-6">
             {/* Upcoming Events */}
             <Card>
               <CardContent className="p-6">

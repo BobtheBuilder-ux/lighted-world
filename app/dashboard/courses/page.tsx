@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { BookOpen, Play, Clock, CheckCircle, Lock, ArrowLeft, Search, Lightbulb, Star } from 'lucide-react';
+import { BookOpen, Play, Clock, CheckCircle, Lock, ArrowLeft, Search, Lightbulb, Star, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -41,6 +41,7 @@ interface Category {
 export default function Courses() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const categories: Category[] = [
     { id: 'all', label: 'All Courses' },
@@ -194,13 +195,13 @@ export default function Courses() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <Link href="/dashboard" className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
                 <ArrowLeft className="w-5 h-5" />
-                <span>Back to Dashboard</span>
+                <span className="hidden sm:inline">Back to Dashboard</span>
               </Link>
             </div>
             
@@ -210,8 +211,60 @@ export default function Courses() {
               </div>
               <span className="text-xl font-bold text-gray-900">LightedWorld</span>
             </Link>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2"
+              >
+                {isMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden border-t border-gray-200">
+            <div className="px-4 py-3">
+              <div className="relative mb-3">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  type="text"
+                  placeholder="Search courses..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 w-full"
+                />
+              </div>
+              <div className="flex flex-col space-y-2">
+                {categories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => {
+                      setSelectedCategory(category.id);
+                      setIsMenuOpen(false);
+                    }}
+                    className={`px-4 py-2 rounded-full text-left transition-all duration-200 ${
+                      selectedCategory === category.id
+                        ? 'bg-amber-500 text-white'
+                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                    }`}
+                  >
+                    {category.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -223,8 +276,8 @@ export default function Courses() {
           </p>
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-col lg:flex-row gap-6 items-center justify-between mb-8">
+        {/* Desktop Filters */}
+        <div className="hidden md:flex flex-col lg:flex-row gap-6 items-center justify-between mb-8">
           <div className="flex flex-wrap gap-3">
             {categories.map((category) => (
               <button
@@ -253,7 +306,7 @@ export default function Courses() {
         </div>
 
         {/* Courses Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredCourses.map((course) => (
             <Card key={course.id} className="hover:shadow-lg transition-all duration-300 overflow-hidden">
               <CardContent className="p-0">
