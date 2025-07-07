@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronRight, Lightbulb, ArrowRight, Star, Quote, Play, Filter, Search, Heart, Target, Users, Award } from 'lucide-react';
+import { ChevronRight, Lightbulb, ArrowRight, Star, Quote, Play, Filter, Search, Heart, Target, Users, Award, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import Link from 'next/link';
 
 export default function Stories() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -180,6 +181,7 @@ export default function Stories() {
               </div>
               <span className="text-xl font-bold text-gray-900">LightedWorld</span>
             </Link>
+            
             <div className="hidden md:flex items-center space-x-8">
               <Link href="/about" className="text-gray-700 hover:text-amber-600 transition-colors">About</Link>
               <Link href="/services" className="text-gray-700 hover:text-amber-600 transition-colors">Services</Link>
@@ -189,7 +191,46 @@ export default function Stories() {
                 Begin Your Journey
               </Button>
             </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2"
+              >
+                {isMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </Button>
+            </div>
           </div>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="md:hidden border-t border-gray-200">
+              <div className="px-4 py-3 space-y-3">
+                <Link href="/about" className="block text-gray-700 hover:text-amber-600 transition-colors py-2">
+                  About
+                </Link>
+                <Link href="/services" className="block text-gray-700 hover:text-amber-600 transition-colors py-2">
+                  Services
+                </Link>
+                <Link href="/stories" className="block text-amber-600 font-medium py-2">
+                  Stories
+                </Link>
+                <Link href="/resources" className="block text-gray-700 hover:text-amber-600 transition-colors py-2">
+                  Resources
+                </Link>
+                <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white mt-4">
+                  Begin Your Journey
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -197,13 +238,13 @@ export default function Stories() {
       <section className="pt-24 pb-16 bg-gradient-to-br from-amber-50 via-white to-teal-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-              Real People,
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-teal-600"> Real Transformations</span>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+              Real Stories of
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-teal-600"> Transformation</span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
-              Discover how ordinary people have created extraordinary changes in their lives. 
-              These stories prove that transformation is possible for anyone willing to take the journey.
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed px-4 sm:px-0">
+              Be inspired by authentic journeys of individuals who have discovered their true potential 
+              and transformed their lives with LightedWorld.
             </p>
           </div>
         </div>
@@ -224,10 +265,10 @@ export default function Stories() {
       </section>
 
       {/* Filters */}
-      <section className="py-12 bg-white border-b border-gray-100">
+      <section className="py-12 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 justify-center w-full lg:w-auto">
               {categories.map((category) => (
                 <button
                   key={category.id}
@@ -243,14 +284,14 @@ export default function Stories() {
                 </button>
               ))}
             </div>
-            <div className="relative">
+            <div className="relative w-full lg:w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <Input
                 type="text"
                 placeholder="Search stories..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-64"
+                className="pl-10 w-full"
               />
             </div>
           </div>
@@ -260,131 +301,71 @@ export default function Stories() {
       {/* Stories Grid */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredStories.map((story, index) => (
-              <Card key={story.id} className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg overflow-hidden">
+              <Card key={index} className="hover:shadow-xl transition-all duration-300">
                 <CardContent className="p-0">
-                  {/* Story Header */}
-                  <div className="relative">
-                    <div className="grid grid-cols-2 h-48">
-                      <div className="relative">
-                        <img 
-                          src={story.beforeImage}
-                          alt="Before transformation"
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
-                          Before
-                        </div>
-                      </div>
-                      <div className="relative">
-                        <img 
-                          src={story.afterImage}
-                          alt="After transformation"
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute bottom-2 right-2 bg-amber-500 text-white px-2 py-1 rounded text-xs">
-                          After
-                        </div>
+                  <img 
+                    src={story.image}
+                    alt={story.name}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        story.category === 'career' ? 'bg-blue-100 text-blue-800' :
+                        story.category === 'personal' ? 'bg-green-100 text-green-800' :
+                        story.category === 'relationships' ? 'bg-purple-100 text-purple-800' :
+                        'bg-amber-100 text-amber-800'
+                      }`}>
+                        {story.category.charAt(0).toUpperCase() + story.category.slice(1)}
+                      </span>
+                      <div className="flex items-center space-x-1">
+                        <Star className="w-4 h-4 text-amber-400 fill-current" />
+                        <span className="text-sm font-medium text-gray-600">{story.rating}</span>
                       </div>
                     </div>
-                    <button className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-colors">
-                      <Play className="w-8 h-8 text-amber-600 ml-1" />
-                    </button>
-                  </div>
-
-                  {/* Story Content */}
-                  <div className="p-8">
-                    <div className="flex items-center mb-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{story.role}</h3>
+                    <p className="text-gray-600 mb-4">{story.quote}</p>
+                    <div className="flex items-center space-x-4">
                       <img 
                         src={story.image}
                         alt={story.name}
-                        className="w-16 h-16 rounded-full mr-4 object-cover"
+                        className="w-10 h-10 rounded-full"
                       />
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900">{story.name}</h3>
-                        <p className="text-gray-600">{story.age} • {story.location}</p>
-                        <div className="flex items-center mt-1">
-                          {[...Array(story.rating)].map((_, i) => (
-                            <Star key={i} className="w-4 h-4 text-amber-400 fill-current" />
-                          ))}
-                        </div>
+                        <div className="font-medium text-gray-900">{story.name}</div>
+                        <div className="text-sm text-gray-500">{story.location}</div>
                       </div>
-                    </div>
-
-                    <Quote className="w-8 h-8 text-teal-600 mb-4" />
-                    <blockquote className="text-lg text-gray-700 italic mb-6">
-                      "{story.quote}"
-                    </blockquote>
-
-                    <p className="text-gray-600 mb-6 leading-relaxed">{story.story}</p>
-
-                    {/* Transformation Details */}
-                    <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                      <h4 className="font-semibold text-gray-900 mb-3">Transformation Summary</h4>
-                      <div className="space-y-2 text-sm">
-                        <div><span className="font-medium">Before:</span> {story.transformation.before}</div>
-                        <div><span className="font-medium">After:</span> {story.transformation.after}</div>
-                        <div><span className="font-medium">Timeframe:</span> {story.transformation.timeframe}</div>
-                        <div><span className="font-medium">Program:</span> {story.program}</div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-500">{story.role}</span>
-                      <Button variant="outline" className="border-amber-500 text-amber-600 hover:bg-amber-50">
-                        Watch Full Story
-                        <Play className="ml-2 w-4 h-4" />
-                      </Button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-
-          {filteredStories.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-xl text-gray-600">No stories found matching your criteria.</p>
-              <Button 
-                onClick={() => {setSelectedCategory('all'); setSearchTerm('');}}
-                className="mt-4 bg-amber-500 hover:bg-amber-600 text-white"
-              >
-                Show All Stories
-              </Button>
-            </div>
-          )}
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-teal-50 to-amber-50">
+      <section className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">Your Story Could Be Next</h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Every transformation story started with a single decision to change. 
-            What story will you write about your life?
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6">Ready to Write Your Success Story?</h2>
+          <p className="text-lg sm:text-xl text-gray-300 mb-8">
+            Join thousands of others who have transformed their lives with LightedWorld. 
+            Your journey begins with a single step.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 text-lg">
-              Start Your Transformation
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Link href="/services">
-              <Button size="lg" variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-50 px-8 py-4 text-lg">
-                Explore Our Programs
-                <ChevronRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-          </div>
+          <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 text-lg">
+            Begin Your Transformation
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center space-x-2 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center">
                   <Lightbulb className="w-5 h-5 text-white" />

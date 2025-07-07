@@ -1,13 +1,26 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronRight, Lightbulb, ArrowRight, Star, Users, Heart, Target, Clock, CheckCircle, Calendar, Play } from 'lucide-react';
+import { 
+  Lightbulb, 
+  Star, 
+  Users, 
+  Heart, 
+  ArrowRight, 
+  Calendar,
+  Play,
+  Clock,
+  Menu,
+  X,
+  CheckCircle
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 
 export default function Services() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeService, setActiveService] = useState(0);
 
   useEffect(() => {
@@ -175,6 +188,7 @@ export default function Services() {
               </div>
               <span className="text-xl font-bold text-gray-900">LightedWorld</span>
             </Link>
+            
             <div className="hidden md:flex items-center space-x-8">
               <Link href="/about" className="text-gray-700 hover:text-amber-600 transition-colors">About</Link>
               <Link href="/services" className="text-amber-600 font-medium">Services</Link>
@@ -184,7 +198,46 @@ export default function Services() {
                 Begin Your Journey
               </Button>
             </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2"
+              >
+                {isMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </Button>
+            </div>
           </div>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="md:hidden border-t border-gray-200">
+              <div className="px-4 py-3 space-y-3">
+                <Link href="/about" className="block text-gray-700 hover:text-amber-600 transition-colors py-2">
+                  About
+                </Link>
+                <Link href="/services" className="block text-amber-600 font-medium py-2">
+                  Services
+                </Link>
+                <Link href="/stories" className="block text-gray-700 hover:text-amber-600 transition-colors py-2">
+                  Stories
+                </Link>
+                <Link href="/resources" className="block text-gray-700 hover:text-amber-600 transition-colors py-2">
+                  Resources
+                </Link>
+                <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white mt-4">
+                  Begin Your Journey
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -192,18 +245,42 @@ export default function Services() {
       <section className="pt-24 pb-16 bg-gradient-to-br from-amber-50 via-white to-teal-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
               Transform Your Life with
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-teal-600"> Expert Guidance</span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed px-4 sm:px-0">
               Choose from our comprehensive range of transformation services, each designed to meet you 
               where you are and guide you to where you want to be.
             </p>
-            <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 text-lg">
+            <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 text-lg w-full sm:w-auto">
               Schedule Free Discovery Call
               <Calendar className="ml-2 w-5 h-5" />
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Process Steps */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">How It Works</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+              A simple but powerful process to begin your transformation journey
+            </p>
+          </div>
+          
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {process.map((step) => (
+              <div key={step.step} className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-teal-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">
+                  {step.step}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{step.title}</h3>
+                <p className="text-gray-600">{step.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -212,8 +289,8 @@ export default function Services() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Signature Programs</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Our Signature Programs</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
               Comprehensive transformation programs designed to create lasting change 
               and help you step into your fullest potential.
             </p>
@@ -221,16 +298,16 @@ export default function Services() {
           
           <div className="space-y-20">
             {mainServices.map((service, index) => (
-              <div key={index} className={`grid lg:grid-cols-2 gap-16 items-center ${index % 2 === 1 ? 'lg:grid-flow-col-dense' : ''}`}>
+              <div key={index} className={`grid lg:grid-cols-2 gap-8 lg:gap-16 items-center ${index % 2 === 1 ? 'lg:grid-flow-col-dense' : ''}`}>
                 <div className={index % 2 === 1 ? 'lg:col-start-2' : ''}>
                   <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-teal-600 rounded-2xl flex items-center justify-center text-white mb-8">
                     {service.icon}
                   </div>
-                  <h3 className="text-3xl font-bold text-gray-900 mb-4">{service.title}</h3>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{service.title}</h3>
                   <p className="text-xl text-amber-600 font-medium mb-6">{service.subtitle}</p>
                   <p className="text-lg text-gray-600 mb-8 leading-relaxed">{service.description}</p>
                   
-                  <div className="grid md:grid-cols-3 gap-4 mb-8">
+                  <div className="grid sm:grid-cols-3 gap-4 mb-8">
                     <div className="bg-gray-50 p-4 rounded-lg text-center">
                       <Clock className="w-6 h-6 text-amber-600 mx-auto mb-2" />
                       <div className="font-semibold text-gray-900">{service.duration}</div>
@@ -245,7 +322,7 @@ export default function Services() {
                     </div>
                   </div>
                   
-                  <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white">
+                  <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white w-full sm:w-auto">
                     Learn More & Apply
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Button>
@@ -257,28 +334,29 @@ export default function Services() {
                       <img 
                         src={service.image}
                         alt={service.title}
-                        className="w-full h-64 object-cover rounded-t-lg"
+                        className="w-full h-64 sm:h-96 object-cover rounded-t-lg"
                       />
                       <div className="p-8">
-                        <h4 className="text-xl font-bold text-gray-900 mb-4">What's Included:</h4>
-                        <ul className="space-y-3 mb-6">
-                          {service.features.map((feature, featureIndex) => (
-                            <li key={featureIndex} className="flex items-start space-x-3">
-                              <CheckCircle className="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
+                        <h4 className="font-semibold text-gray-900 mb-4">Program Includes:</h4>
+                        <ul className="space-y-4">
+                          {service.features.map((feature, fIndex) => (
+                            <li key={fIndex} className="flex items-start space-x-3">
+                              <CheckCircle className="w-6 h-6 text-teal-600 mt-0.5 flex-shrink-0" />
                               <span className="text-gray-700">{feature}</span>
                             </li>
                           ))}
                         </ul>
-                        
-                        <h4 className="text-xl font-bold text-gray-900 mb-4">Expected Outcomes:</h4>
-                        <ul className="space-y-3">
-                          {service.outcomes.map((outcome, outcomeIndex) => (
-                            <li key={outcomeIndex} className="flex items-start space-x-3">
-                              <Star className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                              <span className="text-gray-700">{outcome}</span>
-                            </li>
-                          ))}
-                        </ul>
+                        <div className="mt-8 pt-8 border-t">
+                          <h4 className="font-semibold text-gray-900 mb-4">Expected Outcomes:</h4>
+                          <ul className="space-y-4">
+                            {service.outcomes.map((outcome, oIndex) => (
+                              <li key={oIndex} className="flex items-start space-x-3">
+                                <Star className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                                <span className="text-gray-700">{outcome}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -293,13 +371,13 @@ export default function Services() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Additional Services</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Additional Services</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
               Specialized offerings to complement your transformation journey 
               and provide flexible options for every need and schedule.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {additionalServices.map((service, index) => (
               <Card key={index} className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 shadow-lg">
@@ -320,45 +398,20 @@ export default function Services() {
         </div>
       </section>
 
-      {/* Process */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">How It Works</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our proven process ensures you get the right support for your unique journey. 
-              Here's how we'll work together to create your transformation.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {process.map((step, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-teal-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">
-                  {step.step}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-teal-50 to-amber-50">
+      <section className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">Ready to Begin Your Transformation?</h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Take the first step toward discovering your authentic self and maximizing your potential. 
-            Schedule a complimentary discovery call to explore which program is right for you.
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6">Ready to Begin Your Journey?</h2>
+          <p className="text-lg sm:text-xl text-gray-300 mb-8">
+            Take the first step toward discovering your authentic self. 
+            Schedule a free discovery call to learn how we can support your transformation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 text-lg">
+            <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 text-lg w-full sm:w-auto">
               Schedule Free Discovery Call
               <Calendar className="ml-2 w-5 h-5" />
             </Button>
-            <Button size="lg" variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-50 px-8 py-4 text-lg">
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 text-lg w-full sm:w-auto">
               <Play className="mr-2 w-5 h-5" />
               Watch Program Overview
             </Button>
@@ -372,8 +425,8 @@ export default function Services() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center space-x-2 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center">
                   <Lightbulb className="w-5 h-5 text-white" />

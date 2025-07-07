@@ -1,7 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronRight, Lightbulb, ArrowRight, Download, Play, BookOpen, Headphones, FileText, Calendar, Clock, Star, Search, Filter } from 'lucide-react';
+import { 
+  Lightbulb, 
+  Star, 
+  Download, 
+  BookOpen, 
+  Play,
+  Search,
+  Filter,
+  Menu,
+  X,
+  CheckCircle
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,27 +22,24 @@ interface Resource {
   id: number;
   title: string;
   description: string;
-  category: 'articles' | 'meditations' | 'worksheets' | 'videos';
+  category: 'workbooks' | 'videos' | 'meditation' | 'articles';
   type: string;
   duration: string;
   difficulty: string;
   image: string;
   rating: number;
   downloads: string;
-  featured?: boolean;
-  downloadUrl?: string;
-  playUrl?: string;
-  readUrl?: string;
+  icon?: React.ReactNode;
 }
 
 interface Category {
   id: string;
   label: string;
-  icon: JSX.Element;
 }
 
 export default function Resources() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -40,11 +48,11 @@ export default function Resources() {
   }, []);
 
   const categories: Category[] = [
-    { id: 'all', label: 'All Resources', icon: <Star className="w-4 h-4" /> },
-    { id: 'articles', label: 'Articles & Guides', icon: <BookOpen className="w-4 h-4" /> },
-    { id: 'meditations', label: 'Meditations', icon: <Headphones className="w-4 h-4" /> },
-    { id: 'worksheets', label: 'Worksheets', icon: <FileText className="w-4 h-4" /> },
-    { id: 'videos', label: 'Videos', icon: <Play className="w-4 h-4" /> }
+    { id: 'all', label: 'All Resources' },
+    { id: 'workbooks', label: 'Workbooks' },
+    { id: 'videos', label: 'Video Guides' },
+    { id: 'meditation', label: 'Meditations' },
+    { id: 'articles', label: 'Articles' }
   ];
 
   const featuredResources: Resource[] = [
@@ -52,13 +60,11 @@ export default function Resources() {
       id: 1,
       title: "The Complete Self-Discovery Workbook",
       description: "A comprehensive 50-page workbook with exercises, reflections, and assessments to guide your journey of self-discovery.",
-      category: "worksheets",
+      category: "workbooks" as const,
       type: "PDF Download",
       duration: "2-3 hours",
       difficulty: "Beginner",
       image: "https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop",
-      downloadUrl: "#",
-      featured: true,
       rating: 4.9,
       downloads: "15,000+"
     },
@@ -66,13 +72,11 @@ export default function Resources() {
       id: 2,
       title: "Morning Transformation Meditation",
       description: "Start your day with intention and clarity through this powerful 15-minute guided meditation for personal transformation.",
-      category: "meditations",
+      category: "meditation" as const,
       type: "Audio",
       duration: "15 minutes",
       difficulty: "All Levels",
       image: "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop",
-      playUrl: "#",
-      featured: true,
       rating: 4.8,
       downloads: "25,000+"
     },
@@ -80,13 +84,11 @@ export default function Resources() {
       id: 3,
       title: "Finding Your Life Purpose: A Step-by-Step Guide",
       description: "Discover your unique purpose through this comprehensive guide that has helped thousands find their calling.",
-      category: "articles",
+      category: "articles" as const,
       type: "Article",
       duration: "20 min read",
       difficulty: "Intermediate",
       image: "https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop",
-      readUrl: "#",
-      featured: true,
       rating: 4.9,
       downloads: "30,000+"
     }
@@ -109,7 +111,7 @@ export default function Resources() {
       id: 5,
       title: "Overcoming Limiting Beliefs Worksheet",
       description: "Identify and transform the beliefs that are holding you back from your full potential.",
-      category: "worksheets",
+      category: "workbooks",
       type: "PDF Download",
       duration: "45 minutes",
       difficulty: "Intermediate",
@@ -121,7 +123,7 @@ export default function Resources() {
       id: 6,
       title: "Stress Release & Inner Peace Meditation",
       description: "A calming 20-minute meditation to release stress and find your center.",
-      category: "meditations",
+      category: "meditation",
       type: "Audio",
       duration: "20 minutes",
       difficulty: "All Levels",
@@ -145,7 +147,7 @@ export default function Resources() {
       id: 8,
       title: "Values Clarification Exercise",
       description: "Discover your core values and learn how to make decisions aligned with what matters most to you.",
-      category: "worksheets",
+      category: "workbooks",
       type: "PDF Download",
       duration: "30 minutes",
       difficulty: "Beginner",
@@ -169,7 +171,7 @@ export default function Resources() {
       id: 10,
       title: "Confidence Building Meditation Series",
       description: "A 7-part meditation series designed to build unshakeable confidence from within.",
-      category: "meditations",
+      category: "meditation",
       type: "Audio Series",
       duration: "7 x 12 minutes",
       difficulty: "All Levels",
@@ -205,37 +207,13 @@ export default function Resources() {
 
   const allResources = [...featuredResources, ...resources];
 
-  const filteredResources = allResources.filter(resource => {
-    const matchesCategory = selectedCategory === 'all' || resource.category === selectedCategory;
-    const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         resource.description.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
-
-  const getResourceIcon = (category: Resource['category']) => {
-    switch (category) {
-      case 'articles': return <BookOpen className="w-6 h-6" />;
-      case 'meditations': return <Headphones className="w-6 h-6" />;
-      case 'worksheets': return <FileText className="w-6 h-6" />;
-      case 'videos': return <Play className="w-6 h-6" />;
-      default: return <Star className="w-6 h-6" />;
-    }
-  };
-
   const getActionButton = (resource: Resource) => {
     switch (resource.category) {
-      case 'worksheets':
-        return (
-          <Button className="bg-amber-500 hover:bg-amber-600 text-white w-full">
-            <Download className="mr-2 w-4 h-4" />
-            Download PDF
-          </Button>
-        );
-      case 'meditations':
+      case 'workbooks':
         return (
           <Button className="bg-teal-500 hover:bg-teal-600 text-white w-full">
-            <Play className="mr-2 w-4 h-4" />
-            Listen Now
+            <Download className="mr-2 w-4 h-4" />
+            Download Workbook
           </Button>
         );
       case 'videos':
@@ -255,6 +233,31 @@ export default function Resources() {
     }
   };
 
+  const getResourceIcon = (category: Resource['category']) => {
+    switch (category) {
+      case 'workbooks':
+        return <Download className="w-6 h-6" />;
+      case 'videos':
+        return <Play className="w-6 h-6" />;
+      case 'meditation':
+        return <Star className="w-6 h-6" />;
+      case 'articles':
+        return <BookOpen className="w-6 h-6" />;
+    }
+  };
+
+  // Add icons to resources
+  const resourcesWithIcons = allResources.map(resource => ({
+    ...resource,
+    icon: getResourceIcon(resource.category as Resource['category'])
+  }));
+
+  const filteredResources = resourcesWithIcons.filter(resource => 
+    (selectedCategory === 'all' || resource.category === selectedCategory) &&
+    (resource.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+     resource.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -267,6 +270,7 @@ export default function Resources() {
               </div>
               <span className="text-xl font-bold text-gray-900">LightedWorld</span>
             </Link>
+            
             <div className="hidden md:flex items-center space-x-8">
               <Link href="/about" className="text-gray-700 hover:text-amber-600 transition-colors">About</Link>
               <Link href="/services" className="text-gray-700 hover:text-amber-600 transition-colors">Services</Link>
@@ -276,7 +280,46 @@ export default function Resources() {
                 Begin Your Journey
               </Button>
             </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2"
+              >
+                {isMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </Button>
+            </div>
           </div>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="md:hidden border-t border-gray-200">
+              <div className="px-4 py-3 space-y-3">
+                <Link href="/about" className="block text-gray-700 hover:text-amber-600 transition-colors py-2">
+                  About
+                </Link>
+                <Link href="/services" className="block text-gray-700 hover:text-amber-600 transition-colors py-2">
+                  Services
+                </Link>
+                <Link href="/stories" className="block text-gray-700 hover:text-amber-600 transition-colors py-2">
+                  Stories
+                </Link>
+                <Link href="/resources" className="block text-amber-600 font-medium py-2">
+                  Resources
+                </Link>
+                <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white mt-4">
+                  Begin Your Journey
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -284,67 +327,14 @@ export default function Resources() {
       <section className="pt-24 pb-16 bg-gradient-to-br from-amber-50 via-white to-teal-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-              Free Resources for
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-teal-600"> Your Journey</span>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+              Tools for Your
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-teal-600"> Transformation</span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
-              Access our comprehensive library of transformation tools, guides, and inspiration. 
-              Everything you need to support your journey of self-discovery and growth.
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed px-4 sm:px-0">
+              Access our comprehensive library of resources designed to support your journey 
+              of self-discovery and personal growth.
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Resources */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Featured Resources</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our most popular and impactful resources, carefully curated to accelerate your transformation.
-            </p>
-          </div>
-          
-          <div className="grid lg:grid-cols-3 gap-8">
-            {featuredResources.map((resource, index) => (
-              <Card key={resource.id} className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 shadow-lg">
-                <CardContent className="p-0">
-                  <div className="relative">
-                    <img 
-                      src={resource.image}
-                      alt={resource.title}
-                      className="w-full h-48 object-cover rounded-t-lg"
-                    />
-                    <div className="absolute top-4 left-4 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                      Featured
-                    </div>
-                    <div className="absolute top-4 right-4 bg-white/90 rounded-full p-2">
-                      {getResourceIcon(resource.category)}
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">{resource.title}</h3>
-                    <p className="text-gray-600 mb-4">{resource.description}</p>
-                    
-                    <div className="flex items-center justify-between mb-4 text-sm text-gray-500">
-                      <span>{resource.type}</span>
-                      <span>{resource.duration}</span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 text-amber-400 fill-current" />
-                        <span className="text-sm font-medium">{resource.rating}</span>
-                      </div>
-                      <span className="text-sm text-gray-500">{resource.downloads} downloads</span>
-                    </div>
-                    
-                    {getActionButton(resource)}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </div>
       </section>
@@ -353,155 +343,85 @@ export default function Resources() {
       <section className="py-12 bg-gray-50 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 justify-center w-full lg:w-auto">
               {categories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-200 ${
+                  className={`px-4 py-2 rounded-full transition-all duration-200 ${
                     selectedCategory === category.id
                       ? 'bg-amber-500 text-white'
                       : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
                   }`}
                 >
-                  {category.icon}
-                  <span>{category.label}</span>
+                  {category.label}
                 </button>
               ))}
             </div>
-            <div className="relative">
+            <div className="relative w-full lg:w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <Input
                 type="text"
                 placeholder="Search resources..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-64"
+                className="pl-10 w-full"
               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* All Resources */}
-      <section className="py-20 bg-gray-50">
+      {/* Resources Grid */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Complete Resource Library</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Explore our full collection of transformation tools, organized by category for easy discovery.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredResources.map((resource, index) => (
-              <Card key={resource.id} className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-md">
-                <CardContent className="p-0">
-                  <div className="relative">
-                    <img 
-                      src={resource.image}
-                      alt={resource.title}
-                      className="w-full h-40 object-cover rounded-t-lg"
-                    />
-                    {resource.featured && (
-                      <div className="absolute top-3 left-3 bg-amber-500 text-white px-2 py-1 rounded text-xs font-medium">
-                        Featured
-                      </div>
-                    )}
-                    <div className="absolute top-3 right-3 bg-white/90 rounded-full p-1.5">
-                      {getResourceIcon(resource.category)}
-                    </div>
+              <Card key={index} className="hover:shadow-xl transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-6 ${
+                    resource.category === 'workbooks' ? 'bg-teal-100 text-teal-600' :
+                    resource.category === 'videos' ? 'bg-purple-100 text-purple-600' :
+                    'bg-gray-100 text-gray-600'
+                  }`}>
+                    {resource.icon}
                   </div>
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{resource.title}</h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{resource.description}</p>
-                    
-                    <div className="flex items-center justify-between mb-3 text-xs text-gray-500">
-                      <span>{resource.type}</span>
-                      <span>{resource.duration}</span>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{resource.title}</h3>
+                  <p className="text-gray-600 mb-6">{resource.description}</p>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-4 h-4 text-amber-400 fill-current" />
+                      <span className="text-sm font-medium">{resource.rating}</span>
                     </div>
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-3 h-3 text-amber-400 fill-current" />
-                        <span className="text-xs font-medium">{resource.rating}</span>
-                      </div>
-                      <span className="text-xs text-gray-500">{resource.downloads}</span>
-                    </div>
-                    
-                    {getActionButton(resource)}
+                    <span className="text-sm text-gray-500">{resource.downloads} downloads</span>
                   </div>
+                  
+                  {getActionButton(resource)}
                 </CardContent>
               </Card>
             ))}
           </div>
-
-          {filteredResources.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-xl text-gray-600">No resources found matching your criteria.</p>
-              <Button 
-                onClick={() => {setSelectedCategory('all'); setSearchTerm('');}}
-                className="mt-4 bg-amber-500 hover:bg-amber-600 text-white"
-              >
-                Show All Resources
-              </Button>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Newsletter Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">Get New Resources First</h2>
-          <p className="text-xl text-gray-300 mb-8">
-            Join our community and be the first to access new transformation tools, 
-            exclusive content, and special resources.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <Input 
-              type="email" 
-              placeholder="Enter your email"
-              className="bg-white border-0 text-gray-900 flex-1"
-            />
-            <Button className="bg-amber-500 hover:bg-amber-600 text-white px-8">
-              Join Our Community
-            </Button>
-          </div>
-          <p className="text-gray-400 text-sm mt-4">
-            Free resources delivered weekly. Unsubscribe anytime.
-          </p>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-teal-50 to-amber-50">
+      <section className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">Ready for Personalized Guidance?</h2>
-          <p className="text-xl text-gray-600 mb-8">
-            While our free resources are powerful, imagine what's possible with personalized coaching 
-            and support tailored specifically to your unique journey.
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6">Ready to Begin Your Journey?</h2>
+          <p className="text-lg sm:text-xl text-gray-300 mb-8">
+            Get access to our complete library of transformation resources by becoming a member.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 text-lg">
-              Explore Our Programs
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Link href="/services">
-              <Button size="lg" variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-50 px-8 py-4 text-lg">
-                Schedule Discovery Call
-                <Calendar className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-          </div>
+          <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 text-lg">
+            Join LightedWorld Today
+          </Button>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center space-x-2 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center">
                   <Lightbulb className="w-5 h-5 text-white" />
